@@ -3,14 +3,15 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3.66em;
+  height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   pointer-events: none;
   opacity: 0;
   background-color: #{$loader-background};
   transition: opacity 0.3s ease;
+  z-index: -1;
 
   &.ready {
     .pwa-loader-content {
@@ -22,8 +23,11 @@
   }
   
   &.loading {
+    height: 3.66em;
+    align-items: center;
     z-index: z("header") + 1;
     .pwa-loader-content {
+      margin-top: 0;
       .pwa-loader-spinner {
         opacity: 1;
         animation: spin 1s linear infinite;
@@ -39,8 +43,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 2em;
     
     .pwa-loader-spinner {
+      position: absolute;
       width: 20px;
       height: 20px;
       border: 3px solid #{$spinner-color};
