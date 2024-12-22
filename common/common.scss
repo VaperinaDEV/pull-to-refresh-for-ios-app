@@ -1,3 +1,5 @@
+@import "animations";
+
 .pwa-pull-loader {
   position: fixed;
   top: 0;
@@ -10,7 +12,6 @@
   pointer-events: none;
   opacity: 0;
   background-color: #{$loader-background};
-  transition: opacity 0.3s ease;
 
   // ipad has footer nav on top
   html.footer-nav-ipad & {
@@ -26,18 +27,17 @@
 
   &.ready {
     .safari-spinner.spinning {
-      animation: spin 3s linear infinite; // slow spinning
+      animation: slowSpinFade 1.25s linear forwards, slowSpin 2.5s linear infinite; // slow spinning
     }
     &.loading {
       .safari-spinner.spinning {
-        animation: spin 1s linear infinite; // fast spinning
+        animation: fastSpin 1.75s linear infinite; // fast spinning
+        .spinner-line {
+          animation: none; // line animation not working during reload
+        }
       }
     }
   }
-}
-
-.spinner-line {
-  transition: opacity 0.2s ease;
 }
 
 .safari-spinner {
@@ -48,89 +48,33 @@
   
   &.spinning {
     .spinner-line {
-      animation: highlightLine 2s ease-out infinite;
-      .pwa-pull-loader.loading & {
-        animation: highlightLine 1s ease-out infinite;
-      }
+      animation: highlightLine 1s ease-out infinite;
+      animation-delay: 500ms;
+      
       &:nth-child(1) {
         animation-delay: 0s;
       }
       &:nth-child(2) {
-        animation-delay: 0.25s;
-        .pwa-pull-loader.loading & {
-          animation-delay: 125ms;
-        }
+        animation-delay: 125ms;
       }
       &:nth-child(3) {
-        animation-delay: 0.5s;
-        .pwa-pull-loader.loading & {
-          animation-delay: 250ms;
-        }
+        animation-delay: 250ms;
       }
       &:nth-child(4) {
-        animation-delay: 0.75s;
-        .pwa-pull-loader.loading & {
-          animation-delay: 375ms;
-        }
+        animation-delay: 375ms;
       }
       &:nth-child(5) {
-        animation-delay: 1s;
-        .pwa-pull-loader.loading & {
-          animation-delay: 500ms;
-        }
+        animation-delay: 500ms;
       }
       &:nth-child(6) {
-        animation-delay: 1.25s;
-        .pwa-pull-loader.loading & {
-          animation-delay: 625ms;
-        }
+        animation-delay: 625ms;
       }
       &:nth-child(7) {
-        animation-delay: 1.5s;
-        .pwa-pull-loader.loading & {
-          animation-delay: 750ms;
-        }
+        animation-delay: 750ms;
       }
       &:nth-child(8) {
-        animation-delay: 1.75s;
-        .pwa-pull-loader.loading & {
-          animation-delay: 875ms;
-        }
+        animation-delay: 875ms;
       }
     }
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes highlightLine {
-  0%, 80%, 100% { opacity: 0.2; } // low visibility for most of the cycle
-  5%, 10%, 15% { 
-    opacity: 0.75; // transitioning to highlight
-  }
-  12%, 13%, 14% { 
-    opacity: 0.85; // full highlight
-  }
-  15%, 16% { 
-    opacity: 0.8; // slight reduction from full highlight
-  }
-  17%, 18% { 
-    opacity: 0.75; // further reduction
-  }
-  19%, 20% { 
-    opacity: 0.65; // transitioning back to low visibility
-  }
-  21%, 25% { 
-    opacity: 0.5; // smoother transition
-  }
-  26%, 75% { 
-    opacity: 0.35; // slightly more visible than 0.2 for depth
   }
 }
