@@ -156,6 +156,35 @@ export default class PwaPullToRefresh extends Component {
   }
 
   @action
+  removeListeners() {
+    if (this.mainOutlet) {
+      this.mainOutlet.removeEventListener(
+        "touchstart",
+        this.handleTouchStart.bind(this)
+      );
+      this.mainOutlet.removeEventListener(
+        "touchmove",
+        this.handleTouchMove.bind(this)
+      );
+      this.mainOutlet.removeEventListener(
+        "touchend",
+        this.handleTouchEnd.bind(this)
+      );
+    }
+  }
+
+  isMainOutletTouch(event) {
+    let element = event.target;
+    while (element) {
+      if (element.id === "main-outlet") {
+        return true;
+      }
+      element = element.parentElement;
+    }
+    return false;
+  }
+
+  @action
   handleTouchStart(event) {
     if (!this.shouldShow || !this.isMainOutletTouch(event)) {
       return;
@@ -256,35 +285,6 @@ export default class PwaPullToRefresh extends Component {
     
     this.isPulling = false;
     this.pullDistance = 0;
-  }
-
-  isMainOutletTouch(event) {
-    let element = event.target;
-    while (element) {
-      if (element.id === "main-outlet") {
-        return true;
-      }
-      element = element.parentElement;
-    }
-    return false;
-  }
-
-  @action
-  removeListeners() {
-    if (this.mainOutlet) {
-      this.mainOutlet.removeEventListener(
-        "touchstart",
-        this.handleTouchStart.bind(this)
-      );
-      this.mainOutlet.removeEventListener(
-        "touchmove",
-        this.handleTouchMove.bind(this)
-      );
-      this.mainOutlet.removeEventListener(
-        "touchend",
-        this.handleTouchEnd.bind(this)
-      );
-    }
   }
 
   <template>
