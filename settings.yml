@@ -1,8 +1,4 @@
 loader_background:
-  default: "var(--header_background)"
-arrow_up_color:
-  default: "var(--primary-medium)"
-arrow_down_color:
-  default: "var(--primary-medium)"
+  default: "transparent"
 spinner_color:
   default: "var(--primary-medium)"
