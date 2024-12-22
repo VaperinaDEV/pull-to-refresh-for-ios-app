@@ -16,19 +16,13 @@ export default class PwaPullToRefresh extends Component {
   @tracked pullDistance = 0;
   @tracked isRefreshing = false;
   @tracked pullProgress = 0;
-  @tracked rotation = 0;
   @tracked highlightPosition = 0;
   @tracked isReloading = false;
   
   LINE_COUNT = 8;
   THRESHOLD = 100;
   MAX_PULL = 150;
-  SLOW_ROTATION_SPEED = 0.1;
-  FAST_ROTATION_SPEED = 0.3;
-  HIGHLIGHT_SPEED = 0.003;
   mainOutlet = null;
-  animationFrame = null;
-  lastAnimationTime = 0;
 
   get shouldShow() {
     const isChat = this.router.currentRouteName.startsWith("chat");
@@ -44,10 +38,7 @@ export default class PwaPullToRefresh extends Component {
       let opacity = 0;
       
       if (this.isRefreshing) {
-        // Create a moving highlight effect during refresh
-        const distance = Math.abs(index - this.highlightPosition);
-        const wrappedDistance = Math.min(distance, this.LINE_COUNT - distance);
-        opacity = 0.3 + (0.7 * Math.max(0, 1 - (wrappedDistance / 2)));
+        opacity = 0.85;
       } else {
         opacity = Math.max(0, Math.min(1, (this.pullProgress * 2) - (index / this.LINE_COUNT)));
       }
@@ -65,13 +56,10 @@ export default class PwaPullToRefresh extends Component {
       />`;
     }).join('');
 
-    const rotationStyle = this.isRefreshing ? `transform: rotate(${this.rotation}deg);` : '';
-
     return htmlSafe(`
       <svg
         viewBox="0 0 64 64"
-        class="safari-spinner"
-        style="${rotationStyle}"
+        class="safari-spinner ${this.isRefreshing ? 'spinning' : ''}"
       >
         ${lines}
       </svg>
@@ -80,36 +68,18 @@ export default class PwaPullToRefresh extends Component {
 
   @action
   startAnimation() {
-    const animate = (currentTime) => {
-      if (!this.lastAnimationTime) {
-        this.lastAnimationTime = currentTime;
-      }
-      
-      const deltaTime = currentTime - this.lastAnimationTime;
-      
-      if (this.isRefreshing) {
-        // Choose the right speed
-        const rotationSpeed = this.isReloading ? this.FAST_ROTATION_SPEED : this.SLOW_ROTATION_SPEED;
-        
-        // Spin and highlight animation
-        this.rotation = (this.rotation + deltaTime * rotationSpeed) % 360;
-        this.highlightPosition = (this.highlightPosition + deltaTime * this.HIGHLIGHT_SPEED) % this.LINE_COUNT;
-      }
-      
-      this.lastAnimationTime = currentTime;
-      this.animationFrame = requestAnimationFrame(animate);
-    };
-    
-    this.animationFrame = requestAnimationFrame(animate);
+    const spinner = document.querySelector(".safari-spinner");
+    if (spinner) {
+      spinner.classList.add("spinning");
+    }
   }
 
   @action
   stopAnimation() {
-    if (this.animationFrame) {
-      cancelAnimationFrame(this.animationFrame);
-      this.animationFrame = null;
+    const spinner = document.querySelector(".safari-spinner");
+    if (spinner) {
+      spinner.classList.remove("spinning");
     }
-    this.lastAnimationTime = 0;
   }
 
   constructor() {
@@ -196,7 +166,6 @@ export default class PwaPullToRefresh extends Component {
       this.isPulling = true;
       this.pullDistance = 0;
       this.pullProgress = 0;
-      this.rotation = 0;
       this.highlightPosition = 0;
       this.isReloading = false;
     }
@@ -254,24 +223,15 @@ export default class PwaPullToRefresh extends Component {
     
     if (this.pullDistance >= this.THRESHOLD) {
       this.isRefreshing = true;
-      this.isReloading = true;  // Set the faster spin
+      this.isReloading = true;
       
       if (loader) {
         loader.classList.add("loading");
       }
             
       discourseLater(() => {
-        if (loader) {
-          // Hide the loader before reload
-          loader.style.height = "0";
-          loader.style.opacity = "0";
-          loader.style.transition = "all 0.1s ease";
-        }
-        
-        discourseLater(() => {
-          window.location.reload();
-        }, 100);
-      }, 900);
+        window.location.reload();
+      }, 1000);
     } else {
       this.isRefreshing = false;
       this.isReloading = false;
