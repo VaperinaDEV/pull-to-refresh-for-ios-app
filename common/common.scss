@@ -31,7 +31,7 @@
     }
     &.loading {
       .safari-spinner.spinning {
-        animation: fastSpin 1.75s linear infinite; // fast spinning
+        animation: fastSpin 1s linear infinite; // fast spinning
         .spinner-line {
           animation: none; // line animation not working during reload
         }
