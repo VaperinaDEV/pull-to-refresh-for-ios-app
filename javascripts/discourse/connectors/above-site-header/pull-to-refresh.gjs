@@ -2,7 +2,7 @@ import Component from "@glimmer/component";
 import { service } from "@ember/service";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
-import discourseLater from "discourse-common/lib/later";
+import discourseLater from "discourse/lib/later";
 import { htmlSafe } from "@ember/template";
 import concatClass from "discourse/helpers/concat-class";
 
