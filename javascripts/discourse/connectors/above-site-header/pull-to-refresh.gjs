@@ -3,7 +3,7 @@ import { service } from "@ember/service";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
 import discourseLater from "discourse/lib/later";
-import { htmlSafe } from "@ember/template";
+import { trustHTML } from "@ember/template";
 import concatClass from "discourse/helpers/concat-class";
 
 export default class PwaPullToRefresh extends Component {
@@ -56,7 +56,7 @@ export default class PwaPullToRefresh extends Component {
       />`;
     }).join('');
 
-    return htmlSafe(`
+    return trustHTML(`
       <svg
         viewBox="0 0 64 64"
         class="safari-spinner ${this.isRefreshing ? 'spinning' : ''}"
